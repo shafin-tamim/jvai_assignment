@@ -58,13 +58,13 @@ A: ১৫ বছর
 
 #### Main Interface
 ![Main Interface](./assets/image.png)
-*The main application interface showing the question input area and response section*
 
 #### Sample Question-Answer
-!(./assets/image-1.png)
+![Main Interface](./assets/image-1.png)
 
 #### PDF Processing
-!(./assets/image-2.png)
+![Main Interface](./assets/image-2.png)
+*The main application interface showing the question input area and response section*
 
 
 ## System Architecture

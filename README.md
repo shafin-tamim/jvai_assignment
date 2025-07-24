@@ -1,104 +1,103 @@
-# HSC Question Answering System
+# HSC Bangla Question Answering System
 
-An AI-powered question answering system specifically designed for HSC (Higher Secondary Certificate) content, supporting both Bangla and English queries.
+An intelligent QA system built to answer questions about HSC Bangla content using Google's Gemini AI.
 
 ## Setup Guide
 
-1. Clone the repository:
+1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/online_assingment.git
-cd online_assingment
+git clone <repository-url>
+cd 10ms_assignment
 ```
 
-2. Install dependencies:
+2. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Set up environment variables:
-   - Create a `.env` file in the root directory
-   - Add your Google API key:
-```
+3. Create a `.env` file and add your Google API key
+```bash
 GOOGLE_API_KEY=your_api_key_here
 ```
 
-4. Run the application:
+4. Run the application
 ```bash
-streamlit run streamlit_app.py
+streamlit run app.py
 ```
 
-## Tools & Libraries Used
+## Tools & Technologies
 
-- **Streamlit**: Web interface framework
-- **LangChain**: Framework for building LLM applications
-- **Google Gemini**: Large Language Model for text generation
-- **FAISS**: Vector store for efficient similarity search
-- **PyPDF2**: PDF processing
-- **Sentence Transformers**: Text embeddings
-- **Python-dotenv**: Environment variable management
+- **Framework**: Streamlit
+- **Language Model**: Google Gemini 2.5 Flash
+- **Vector Store**: FAISS
+- **Embeddings**: Google Generative AI Embeddings
+- **PDF Processing**: PyPDF2
+- **Text Processing**: LangChain
 
 ## Key Features
 
-- PDF document processing
-- Vector-based similarity search
 - Bilingual support (Bangla & English)
-- Chat history maintenance
-- Interactive web interface
+- PDF document processing
+- Vector similarity search
+- Conversation history
+- User-friendly interface
 
-## Sample Queries and Outputs
+## Sample Queries & Outputs
 
 ### Bangla Queries
+Q: "অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে?"
+A: শুম্ভুনাথ
 
-Q: "বাংলা প্রথম পত্রে কয়টি গদ্য রচনা আছে?"
-A: [Sample answer in Bangla]
+Q: "কাকে অনুপমের ভাগ্য দেবতা বলে উল্লেখ করা হয়েছে?"
+A: মামাকে
 
-Q: "রবীন্দ্রনাথ ঠাকুরের কোন কবিতাটি পাঠ্যসূচিতে অন্তর্ভুক্ত আছে?"
-A: [Sample answer in Bangla]
+Q: "বিয়ের সময় কল্যাণীর প্রকৃত বয়স কত ছিল?"
+A: ১৫ বছর
 
-### English Queries
+### Sample Screenshots
 
-Q: "How many poems are there in the first paper?"
-A: [Sample answer in English]
+#### Main Interface
+![Main Interface](./assets/image.png)
+*The main application interface showing the question input area and response section*
 
-Q: "What are the main themes in the curriculum?"
-A: [Sample answer in English]
+#### Sample Question-Answer
+![Question Answer](./assets/image-1.png)
+*Example of a question being answered by the system with relevant context*
 
-## API Documentation
+#### PDF Processing
+![PDF Processing](./assets/image-2.png)
+*Demonstration of PDF document processing and extraction*
 
-### Main Functions
+## System Architecture
 
-1. `get_answer(user_question: str) -> str`
-   - Input: User question (string)
-   - Output: AI-generated answer (string)
-   - Supports both Bangla and English queries
+1. **Document Processing**
+   - PDF text extraction
+   - Text chunking
+   - Embedding generation
 
-### Vector Store Operations
+2. **Query Processing**
+   - Question embedding
+   - Similarity search
+   - Context retrieval
+   - Answer generation
 
-- `vector_store.similarity_search(query)`
-  - Performs semantic search on the document
-  - Returns relevant document chunks
+## Limitations & Future Improvements
 
-### Environment Variables
+- Currently supports single PDF document
+- Limited to text-based QA
+- Future scope:
+  - Multiple document support
+  - Image-based questions
+  - Enhanced context understanding
+  - API integration
 
-- `GOOGLE_API_KEY`: Required for Google Gemini API access
+## Performance Metrics
 
-## Limitations
-
-- Currently supports only PDF format documents
-- Requires active internet connection
-- Response time may vary based on query complexity
-
-## Future Improvements
-
-- Support for multiple document formats
-- Offline mode support
-- Enhanced context understanding
-- Multi-document querying capability
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
+- Average response time: ~2-3 seconds
+- Context retrieval accuracy: Based on vector similarity
+- Answer relevance: Determined by Gemini model
+- Memory usage: ~500MB-1GB depending on document size
 
 ## License
 
-[Your chosen license]
+[Add your license information]

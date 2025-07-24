@@ -59,10 +59,10 @@ A: ১৫ বছর
 #### Main Interface
 ![Main Interface](./assets/image.png)
 
-#### Sample Question-Answer
+
 ![Main Interface](./assets/image-1.png)
 
-#### PDF Processing
+
 ![Main Interface](./assets/image-2.png)
 *The main application interface showing the question input area and response section*
 

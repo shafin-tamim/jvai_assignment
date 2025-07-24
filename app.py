@@ -1,13 +1,13 @@
+import os
+from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import os
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 import google.generativeai as genai
 from langchain.vectorstores import FAISS
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-from dotenv import load_dotenv
+import streamlit as st
 
 # -------------------------
 # Load environment variables
@@ -21,7 +21,7 @@ genai.configure(api_key=api_key)
 # -------------------------
 # PDF Loading and text extraction
 # -------------------------
-pdf_files = ["F:/Git/online_assingment/HSC26-Bangla1st-Paper.pdf"]  # replace with your actual PDF paths
+pdf_files = ["F:/Git/online_assingment/HSC26-Bangla1st-Paper.pdf"]
 combined_text = ""
 
 for pdf_file in pdf_files:
@@ -36,16 +36,14 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
 text_chunks = splitter.split_text(combined_text)
 
 # -------------------------
-# Create FAISS vector store
+# Create or Load FAISS vector store
 # -------------------------
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-vector_store.save_local("faiss_index")
-
-# -------------------------
-# Load vector store for retrieval
-# -------------------------
-vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+if not os.path.exists("faiss_index/index.faiss"):
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+    vector_store.save_local("faiss_index")
+else:
+    vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 
 # -------------------------
 # Setup Gemini QA chain
@@ -63,13 +61,38 @@ model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
 qa_chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
 # -------------------------
-# Convert the QA functionality into a function
+# Function to get answer
 # -------------------------
 def get_answer(user_question):
     relevant_docs = vector_store.similarity_search(user_question)
     result = qa_chain({"input_documents": relevant_docs, "question": user_question}, return_only_outputs=True)
     return result["output_text"]
 
-# Remove the direct question execution
-if __name__ == "__main__":
-    print("QA System initialized and ready to use")
+# -------------------------
+# Streamlit Interface
+# -------------------------
+st.set_page_config(page_title="HSC Bangla QA System", page_icon="📘", layout="centered")
+st.title("📘 HSC Bangla Question Answering System")
+
+# Initialize chat history
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Input field
+user_question = st.text_input("Enter your question:")
+
+if st.button("Get Answer"):
+    if user_question.strip() != "":
+        answer = get_answer(user_question)
+        st.session_state.chat_history.append({"question": user_question, "answer": answer})
+        st.success("Answer:")
+        st.write(answer)
+    else:
+        st.warning("Please enter a question before pressing the button.")
+
+# Display chat history
+if st.session_state.chat_history:
+    st.subheader("🕑 Recent Questions and Answers")
+    for i, qa in enumerate(reversed(st.session_state.chat_history[-5:])):
+        with st.expander(f"Q: {qa['question']}", expanded=False):
+            st.write("A:", qa['answer'])

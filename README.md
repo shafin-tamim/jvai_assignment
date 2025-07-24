@@ -61,12 +61,11 @@ A: ১৫ বছর
 *The main application interface showing the question input area and response section*
 
 #### Sample Question-Answer
-![Question Answer](./assets/image-1.png)
-*Example of a question being answered by the system with relevant context*
+!(./assets/image-1.png)
 
 #### PDF Processing
-![PDF Processing](./assets/image-2.png)
-*Demonstration of PDF document processing and extraction*
+!(./assets/image-2.png)
+
 
 ## System Architecture
 

@@ -159,6 +159,5 @@ To improve further:
 * Better chunking (sentence/paragraph with metadata)
 * Using **BGE-m3 embeddings** for stronger cross-lingual capture
 * Adding more documents for broader retrieval
-* Gemini-based reranking for higher grounding accuracy.
 
 ---

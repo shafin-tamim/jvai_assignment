@@ -57,8 +57,6 @@ A: ১৫ বছর
 ### Sample Screenshots
 
 #### Main Interface
-![Main Interface](./assets/image.png)
-
 
 ![Main Interface](./assets/image-1.png)
 

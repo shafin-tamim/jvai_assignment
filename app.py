@@ -21,7 +21,7 @@ genai.configure(api_key=api_key)
 # -------------------------
 # PDF Loading and text extraction
 # -------------------------
-pdf_files = ["F:/Git/online_assingment/HSC26-Bangla1st-Paper.pdf"]
+pdf_files = ["F:/Git/jvai/For Task - Policy file.pdf"]
 combined_text = ""
 
 for pdf_file in pdf_files:
@@ -48,14 +48,25 @@ else:
 # -------------------------
 # Setup Gemini QA chain
 # -------------------------
-prompt_template = """You are a helpful assistant. Answer the question using only the provided context.
-Answer in Bangla if the question is in Bangla, and in English if the question is in English.
-Context:
+prompt_template = """
+You are a helpful AI chatbot built to answer questions about a financial policy document.
+Use ONLY the provided context from the document. 
+Do not use outside knowledge. 
+Always include the page or section number from the source in your answer. 
+If the answer cannot be found in the context, say: "I could not find this information in the policy document."
+
+Conversation so far:
+{history}
+
+Context from document:
 {context}
-Question:
+
+User Question:
 {question}
-Answer:
+
+Answer (clear, concise, and with source citation):
 """
+
 prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
 qa_chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
@@ -63,36 +74,57 @@ qa_chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 # -------------------------
 # Function to get answer
 # -------------------------
-def get_answer(user_question):
+def get_answer(user_question, history=""):
     relevant_docs = vector_store.similarity_search(user_question)
-    result = qa_chain({"input_documents": relevant_docs, "question": user_question}, return_only_outputs=True)
+    result = qa_chain(
+        {
+            "input_documents": relevant_docs, 
+            "question": user_question,
+            "history": history,
+            "context": "\n".join(doc.page_content for doc in relevant_docs)
+        }, 
+        return_only_outputs=True
+    )
     return result["output_text"]
 
 # -------------------------
 # Streamlit Interface
 # -------------------------
-st.set_page_config(page_title="HSC Bangla QA System", page_icon="📘", layout="centered")
-st.title("📘 HSC Bangla Question Answering System")
+import streamlit as st
 
-# Initialize chat history
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+st.set_page_config(page_title="Financial Policy QA System", page_icon="💰", layout="wide")
+
+# Sidebar for chat history
+with st.sidebar:
+    st.header("💬 Chat History")
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    
+    if st.session_state.chat_history:
+        for i, qa in enumerate(reversed(st.session_state.chat_history)):
+            with st.expander(f"Q: {qa['question']}", expanded=False):
+                st.markdown(f"A: {qa['answer']}")
+
+# Main content
+st.title("💰 Financial Policy Question Answering System")
 
 # Input field
-user_question = st.text_input("Enter your question:")
+user_question = st.text_input("Ask a question about the Financial Policy Document:")
 
 if st.button("Get Answer"):
     if user_question.strip() != "":
-        answer = get_answer(user_question)
+        # Get previous chat history as formatted string
+        history = "\n".join([
+            f"Q: {qa['question']}\nA: {qa['answer']}"
+            for qa in st.session_state.chat_history
+        ])
+        
+        # Call your retrieval + Gemini chatbot function with history
+        answer = get_answer(user_question, history)
         st.session_state.chat_history.append({"question": user_question, "answer": answer})
         st.success("Answer:")
         st.write(answer)
     else:
-        st.warning("Please enter a question before pressing the button.")
-
-# Display chat history
-if st.session_state.chat_history:
-    st.subheader("🕑 Recent Questions and Answers")
-    for i, qa in enumerate(reversed(st.session_state.chat_history[-5:])):
-        with st.expander(f"Q: {qa['question']}", expanded=False):
-            st.write("A:", qa['answer'])
+        st.warning("⚠️ Please enter a question before pressing the button.")
+else:
+    st.warning("⚠️ Please enter a question before pressing the button.")

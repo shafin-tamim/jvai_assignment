@@ -82,12 +82,6 @@ streamlit run app.py
 - Performance optimization
 - Document preprocessing improvements
 
-## License
-
-[Add License Information]
-  - Enhanced context understanding
-  - API integration
-
 ## Performance Metrics
 
 - Average response time: ~2-3 seconds
